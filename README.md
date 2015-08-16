@@ -34,6 +34,7 @@ Starting program: /usr/local/bin/bash -c "echo {1..9223372036854775805};"
 
 Program received signal SIGSEGV, Segmentation fault.
 0x00007ffff771b4f8 in __memset_avx2 () from /usr/lib/libc.so.6
+(gdb) bt
 #0  0x00007ffff771b4f8 in __memset_avx2 () from /usr/lib/libc.so.6
 #1  0x00000000004b558e in internal_malloc (n=n@entry=18446744073709551600, file=file@entry=0x0, line=line@entry=0, flags=0)
     at malloc.c:816
