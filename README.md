@@ -2,6 +2,7 @@
 
 A integer overflow lives in the bash { } braces which affect the latest version:
 
+```
 $ $(which bash) --version
 GNU bash, version 4.3.42(1)-release (x86_64-unknown-linux-gnu)
 Copyright (C) 2013 Free Software Foundation, Inc.
@@ -9,11 +10,11 @@ License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
 This is free software; you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
-
+```
 
 You can trigger the overflow by running this which results in a segmentation fault.
 
-
+```
 [@ ~]$ /usr/local/bin/bash -c "echo x86_64; echo {1..9223372036854775805};"
 x86_64
 Segmentation fault
@@ -21,8 +22,11 @@ Segmentation fault
 x86
 Segmentation Fault
 [@ ~]$
+```
 
 GDB:
+
+```
 (gdb) r -c "echo {1..9223372036854775805};"
 The program being debugged has been started already.
 Start it from the beginning? (y or n) y
@@ -56,10 +60,13 @@ es             0x0	0
 fs             0x0	0
 gs             0x0	0
 (gdb)
+```
 
 The rax register is interesting as it's stuffed with 0xdfdfdfdf, however I don't think that it's possible to gain control of the cpu registers and this seems to just be a denial of service at the most.
 
 Hilarious source code of braces.c that does multiple checks for an Integer overflow:
+
+```
   /* Check that end-start will not overflow INTMAX_MIN, INTMAX_MAX.  The +3
      and -2, not strictly necessary, are there because of the way the number
      of elements and value passed to strvec_create() are calculated below. */
@@ -89,5 +96,6 @@ Hilarious source code of braces.c that does multiple checks for an Integer overf
       internal_error (_("brace expansion: failed to allocate memory for %d elements"), nelem);
       return ((char **)NULL);
     }
+```
 
 I've notified the bash mailing list so I'll just make this public.
